@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOODÉ — Your Style, Your Mood</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#780000;
+  --red2:#C1121F;
+  --cream:#FDF0D5;
+  --navy:#003049;
+  --blue:#669BBC;
+  --ink:#020c13;
+  --panel:#061925;
+  --panel2:#092333;
+  --line:rgba(102,155,188,.38);
+  --white:#fffaf0;
+  --muted:#a9bdc8;
+  --shadow:0 22px 60px rgba(0,0,0,.38);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 80% 10%,rgba(0,48,73,.48),transparent 30%),
+    radial-gradient(circle at 20% 75%,rgba(120,0,0,.22),transparent 27%),
+    var(--ink);
+  color:var(--white);
+  font-family:Montserrat,Arial,sans-serif;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh;display:flex}
+.sidebar{
+  width:250px;position:fixed;inset:0 auto 0 0;
+  padding:25px 17px;z-index:20;
+  background:linear-gradient(180deg,#020b11 0%,#03141e 55%,#020a10 100%);
+  border-right:1px solid rgba(102,155,188,.14);
+  display:flex;flex-direction:column;
+}
+.brand{padding:0 14px 26px}
+.brand h1{
+  margin:0;color:var(--cream);font:500 47px/1 Cormorant Garamond,serif;
+  letter-spacing:7px
+}
+.brand p{
+  margin:10px 0 0 4px;color:var(--blue);font-size:11px;
+  letter-spacing:3px;text-transform:uppercase
+}
+.nav{display:grid;gap:8px}
+.nav button{
+  border:0;background:transparent;color:#f5eee3;text-align:left;
+  padding:14px 16px;border-radius:8px;display:flex;align-items:center;gap:17px;
+  font-size:13px;letter-spacing:.4px;transition:.2s
+}
+.nav button:hover{background:rgba(102,155,188,.10)}
+.nav button.active{background:linear-gradient(90deg,var(--red2),#76000a);box-shadow:0 10px 25px rgba(193,18,31,.17)}
+.icon{width:25px;text-align:center;font-size:23px;font-family:serif}
+.sidebar-quote{
+  margin-top:auto;text-align:center;padding:25px 16px 12px;color:var(--cream);
+  font:italic 18px/1.45 Cormorant Garamond,serif
+}
+.sidebar-quote:after{content:"";display:block;width:55px;height:1px;background:var(--cream);opacity:.5;margin:20px auto 0}
+.palette{display:flex;gap:10px;justify-content:center;margin-top:20px}
+.swatch{width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.25)}
+main{margin-left:250px;width:calc(100% - 250px);min-width:0}
+.topbar{
+  height:68px;display:flex;align-items:center;padding:0 29px;
+  border-bottom:1px solid rgba(102,155,188,.13);
+  background:rgba(2,12,19,.82);backdrop-filter:blur(12px);
+  position:sticky;top:0;z-index:15
+}
+.topbar-center{margin-left:30px;color:var(--blue);font:500 15px Cormorant Garamond,serif;letter-spacing:2px}
+.topbar-actions{margin-left:auto;display:flex;gap:19px}
+.top-icon{background:none;border:0;color:var(--cream);font-size:27px}
+.view{display:none;padding:18px 18px 60px;max-width:1500px;margin:auto}
+.view.active{display:block}
+.hero{
+  min-height:225px;border:1px solid rgba(102,155,188,.23);border-radius:14px;
+  padding:24px 72px 25px;position:relative;overflow:hidden;
+  background:
+    linear-gradient(90deg,rgba(120,0,0,.70),rgba(0,48,73,.63) 48%,rgba(0,10,17,.34)),
+    radial-gradient(circle at 85% 30%,rgba(102,155,188,.35),transparent 30%),
+    #071a27;
+  box-shadow:var(--shadow)
+}
+.hero:before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 9% 10%,rgba(193,18,31,.5),transparent 14%),
+    linear-gradient(120deg,transparent 55%,rgba(253,240,213,.05));
+  pointer-events:none
+}
+.hero h2{position:relative;margin:0;color:var(--cream);font:italic 48px/1 Cormorant Garamond,serif}
+.hero p{position:relative;margin:5px 0 18px;color:#f2eadc;font-size:14px}
+.filters{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.filter{
+  border:1px solid rgba(102,155,188,.5);border-radius:8px;padding:13px 18px;
+  background:rgba(0,20,32,.54);min-height:74px;position:relative
+}
+.filter:first-child{border-color:rgba(193,18,31,.65);background:rgba(120,0,0,.24)}
+.filter label{display:block;color:var(--cream);font-size:12px;letter-spacing:1px;margin-bottom:7px}
+.filter select{
+  width:100%;border:0;outline:0;background:transparent;color:var(--muted);
+  font-size:12px;appearance:auto
+}
+.filter select option{background:var(--navy);color:white}
+.generator-controls{position:relative;margin-top:14px;display:grid;grid-template-columns:1fr 210px;gap:14px;align-items:stretch}
+.source-selector{border:1px solid rgba(102,155,188,.38);border-radius:9px;background:rgba(0,20,32,.48);padding:11px 13px}
+.source-selector>label{display:block;color:var(--cream);font-size:9px;letter-spacing:1.2px;margin-bottom:8px}
+.source-options{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.source-option{border:1px solid rgba(102,155,188,.35);background:rgba(3,31,47,.7);color:var(--cream);border-radius:7px;padding:8px 7px;text-align:left;min-height:57px;transition:.2s}
+.source-option:hover{border-color:var(--blue);background:rgba(102,155,188,.12)}
+.source-option.active{border-color:var(--red2);background:linear-gradient(135deg,rgba(120,0,0,.75),rgba(120,0,0,.25))}
+.source-option span{float:left;font-size:17px;margin-right:7px;color:var(--cream)}
+.source-option strong{display:block;font-size:8px;letter-spacing:.5px}
+.source-option small{display:block;color:#9eb6c2;font-size:7px;margin-top:3px;line-height:1.2}
+.main-generate{border:1px solid #f0c7c7;background:linear-gradient(180deg,var(--red2),var(--red));color:var(--cream);border-radius:10px;font-size:11px;letter-spacing:1px;font-weight:600;box-shadow:0 8px 24px rgba(193,18,31,.25);transition:.2s}
+.main-generate:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(193,18,31,.34)}
+.remake-row{display:flex;gap:9px;margin-top:15px}
+.remake-btn{border:1px solid var(--cream);background:transparent;color:var(--cream);border-radius:20px;padding:10px 18px;font-size:10px;letter-spacing:.8px}
+.remake-btn:hover{background:rgba(253,240,213,.08)}
+.save-look-btn{border:1px solid var(--blue);background:rgba(102,155,188,.1);color:var(--blue);border-radius:20px;padding:10px 18px;font-size:10px}
+.section-grid{display:grid;grid-template-columns:1.12fr 1fr 1fr;gap:14px;margin-top:14px}
+.card{
+  border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(3,31,47,.9),rgba(2,20,30,.96));
+  box-shadow:0 16px 35px rgba(0,0,0,.24)
+}
+.card.recs{border-color:var(--red2)}
+.card-head{padding:22px 25px 13px}
+.card-head h3{margin:0;color:var(--cream);font:500 32px Cormorant Garamond,serif;letter-spacing:1px}
+.card-head p{margin:5px 0 14px;color:#bdd0d9;font-size:11px;line-height:1.5}
+.outline-btn{
+  border:1px solid var(--red2);background:transparent;color:var(--cream);
+  border-radius:20px;padding:9px 16px;font-size:10px;letter-spacing:.8px
+}
+.closet .outline-btn,.mix .outline-btn{border-color:var(--blue)}
+.products{
+  background:var(--cream);padding:9px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px
+}
+.product{
+  background:#fffaf0;color:#14202a;border-radius:8px;min-width:0;position:relative;
+  overflow:hidden;border:1px solid #eadfc9
+}
+.product-img{height:92px;display:flex;align-items:center;justify-content:center;background:#f6efe2;overflow:hidden}
+.product-img img{width:100%;height:100%;object-fit:contain}
+.fake-item{position:relative;width:70px;height:76px}
+.fake-item.jeans:before,.fake-item.jeans:after{content:"";position:absolute;top:7px;width:28px;height:69px;background:#7e9bb0;border:1px solid #5e7e94}
+.fake-item.jeans:before{left:6px;transform:skew(-3deg)}
+.fake-item.jeans:after{right:6px;transform:skew(3deg)}
+.fake-item.top:before{content:"";position:absolute;left:12px;top:8px;width:46px;height:57px;background:#171717;border-radius:10px 10px 6px 6px}
+.fake-item.blazer:before{content:"";position:absolute;left:8px;top:4px;width:54px;height:68px;background:#d7c8af;clip-path:polygon(20% 0,80% 0,100% 100%,58% 85%,50% 50%,42% 85%,0 100%)}
+.fake-item.shoes:before{content:"";position:absolute;left:5px;bottom:18px;width:60px;height:22px;border-radius:15px 16px 7px 7px;background:#f8f8f8;border:1px solid #ccc}
+.fake-item.bag:before{content:"";position:absolute;left:12px;top:24px;width:48px;height:38px;border-radius:6px 6px 12px 12px;background:#191919}
+.fake-item.bag:after{content:"";position:absolute;left:22px;top:10px;width:28px;height:24px;border:3px solid #191919;border-bottom:0;border-radius:20px 20px 0 0}
+.product-info{padding:6px 8px 9px}
+.product-info b{display:block;font-size:9px;line-height:1.3}
+.product-info span{font-size:8px;color:#71808a}
+.heart{position:absolute;right:7px;bottom:7px;border:0;background:none;color:#55636c;font-size:15px}
+.upload-zone{
+  margin:12px 17px 12px;border:1px dashed var(--blue);border-radius:9px;
+  min-height:86px;display:flex;align-items:center;justify-content:center;gap:10px;
+  text-align:center;color:var(--cream);font-size:11px;cursor:pointer
+}
+.upload-zone:hover{background:rgba(102,155,188,.08)}
+.upload-zone input{display:none}
+.add-manual{margin:0 17px 10px;width:calc(100% - 34px);border:1px solid rgba(253,240,213,.4);background:transparent;color:var(--cream);padding:10px;border-radius:7px;font-size:10px}
+.tabs{display:flex;gap:22px;padding:0 17px 11px;border-bottom:1px solid rgba(102,155,188,.15);overflow:auto}
+.tabs button{white-space:nowrap;border:0;background:none;color:#a9bcc6;font-size:9px;padding:0 0 7px}
+.tabs button.active{color:var(--cream);border-bottom:2px solid var(--cream)}
+.closet-grid{padding:12px 17px;display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.closet-grid .product-img{height:73px}
+.closet-grid .product-info{padding:5px}
+.closet-grid .product-info b{font-size:8px}
+.mix-content{padding:0 17px 15px}
+.mix-equation{border:1px solid rgba(102,155,188,.5);border-radius:12px;padding:18px 12px;display:grid;grid-template-columns:1fr 25px 1fr;align-items:center;text-align:center}
+.mix-box{padding:8px}
+.mix-symbol{font-size:27px;color:var(--cream)}
+.mix-badge{width:42px;height:42px;border-radius:10px;margin:auto auto 8px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.mix-badge.rec{background:var(--red);color:#ffd7d9}
+.mix-badge.cl{background:var(--blue);color:#061925}
+.mix-box strong{font:600 15px Cormorant Garamond,serif;display:block;color:var(--cream)}
+.mix-box small{display:block;color:#a8bdc8;font-size:8px;line-height:1.4;margin-top:4px}
+.equals{text-align:center;color:var(--cream);font-size:22px;margin:14px}
+.unique-title{text-align:center;font:italic 31px Cormorant Garamond,serif;color:var(--cream);margin:0 0 10px}
+.unique-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.unique-look{background:var(--cream);border-radius:7px;min-height:116px;display:flex;align-items:center;justify-content:center;gap:3px;padding:8px}
+.unique-look .fake-item{transform:scale(.65);margin:-10px}
+.generate{
+  margin-top:14px;width:100%;border:1px solid #a8d7ee;background:linear-gradient(180deg,#6daed0,#4c91b5);
+  color:white;border-radius:22px;padding:11px;font-size:10px;letter-spacing:.5px;
+  box-shadow:0 5px 18px rgba(102,155,188,.25)
+}
+.footer{padding:25px;text-align:center;color:var(--cream);font:500 19px Cormorant Garamond,serif;letter-spacing:2px}
+.footer span{color:var(--blue);font-style:italic}
+.page-title{font:italic 48px Cormorant Garamond,serif;color:var(--cream);margin:15px 0 5px}
+.page-sub{color:#aac0cb;font-size:12px;margin:0 0 20px}
+.catalog{background:var(--cream);border-radius:12px;padding:14px;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.catalog .product-img{height:145px}
+.catalog .product-info b{font-size:10px}
+.empty{padding:40px;text-align:center;color:#78909c}
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;z-index:50;padding:20px
+}
+.modal.open{display:flex}
+.modal-box{width:min(480px,100%);background:#061925;border:1px solid var(--blue);border-radius:14px;padding:24px;box-shadow:var(--shadow)}
+.modal-box h3{margin:0 0 18px;font:32px Cormorant Garamond,serif;color:var(--cream)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;color:#b9cbd4;font-size:10px;margin-bottom:5px}
+.form-group input,.form-group select{
+  width:100%;background:#04131d;border:1px solid rgba(102,155,188,.45);color:var(--cream);
+  padding:10px;border-radius:7px;outline:none
+}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:15px}
+.modal-actions button{padding:10px 16px;border-radius:20px}
+.cancel{background:transparent;border:1px solid #526a77;color:var(--cream)}
+.save{background:var(--red2);border:1px solid var(--red2);color:white}
+.result-panel{
+  display:none;margin-top:14px;border:1px solid var(--blue);border-radius:13px;padding:24px;
+  background:linear-gradient(135deg,rgba(120,0,0,.35),rgba(0,48,73,.58))
+}
+.result-panel.show{display:block}
+.result-title{font:italic 38px Cormorant Garamond,serif;color:var(--cream);margin:0}
+.result-meta{color:#a9c0cb;font-size:10px;margin:4px 0 18px}
+.result-items{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.result-item{background:var(--cream);color:#16242c;border-radius:9px;overflow:hidden}
+.result-item .product-img{height:125px}
+.result-item .product-info{padding:9px}
+.source{display:inline-block;padding:3px 6px;border-radius:9px;font-size:7px;margin-top:5px}
+.source.closet{background:#d7e9f2;color:#003049}
+.source.rec{background:#f2c9cb;color:#780000}
+.reason{margin-top:17px;padding:14px;border-left:2px solid var(--cream);color:#e9e2d8;font:italic 18px Cormorant Garamond,serif}
+@media(max-width:1100px){
+  .sidebar{width:205px}.brand h1{font-size:39px}.brand p{font-size:9px}.nav button{font-size:11px}
+  main{margin-left:205px;width:calc(100% - 205px)}
+  .section-grid{grid-template-columns:1fr 1fr}.card.recs{grid-column:1/-1}
+  .catalog{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:760px){
+  .sidebar{position:relative;width:100%;height:auto;inset:auto;padding:14px}.app{display:block}
+  .brand{display:flex;align-items:center;gap:15px;padding:5px 10px 15px}.brand p{margin:0}
+  .nav{display:flex;overflow:auto}.nav button{white-space:nowrap;padding:10px}
+  .sidebar-quote,.palette{display:none}
+  main{margin:0;width:100%}.topbar{display:none}
+  .view{padding:12px}
+  .hero{padding:22px 18px}.hero h2{font-size:37px}.filters{grid-template-columns:1fr}
+  .generator-controls{grid-template-columns:1fr}.source-options{grid-template-columns:1fr}
+  .section-grid{grid-template-columns:1fr}.card.recs{grid-column:auto}
+  .products{grid-template-columns:repeat(2,1fr)}.closet-grid{grid-template-columns:repeat(2,1fr)}
+  .catalog{grid-template-columns:repeat(2,1fr)}.result-items{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">
+    <h1>MOODÉ</h1>
+    <p>YOUR STYLE, YOUR MOOD</p>
+  </div>
+  <nav class="nav">
+    <button class="active" data-view="home"><span class="icon">✧</span>INICIO</button>
+    <button data-view="recommendations"><span class="icon">♧</span>RECOMENDACIONES</button>
+    <button data-view="closet"><span class="icon">♧</span>TU CLOSET</button>
+    <button data-view="mix"><span class="icon">▦</span>MIX</button>
+    <button data-view="saved"><span class="icon">♡</span>GUARDADOS</button>
+  </nav>
+  <div class="sidebar-quote">La moda no es<br>solo lo que usas,<br>sino como te hace<br>sentir.</div>
+  <div class="palette">
+    <span class="swatch" style="background:#780000"></span>
+    <span class="swatch" style="background:#C1121F"></span>
+    <span class="swatch" style="background:#FDF0D5"></span>
+    <span class="swatch" style="background:#003049"></span>
+    <span class="swatch" style="background:#669BBC"></span>
+  </div>
+</aside>
+
+<main>
+<header class="topbar">
+  <div class="topbar-center">YOUR STYLE, YOUR MOOD</div>
+  <div class="topbar-actions"><button class="top-icon" title="Guardados">♡</button><button class="top-icon" title="Perfil">◎</button></div>
+</header>
+
+<section id="home" class="view active">
+  <div class="hero">
+    <h2>¿Qué buscas hoy?</h2>
+    <p>Cuéntanos tu mood, el clima y el evento, y deja que MOODÉ haga la magia.</p>
+    <div class="filters">
+      <div class="filter"><label>♡ &nbsp; MOOD</label><select id="mood"></select></div>
+      <div class="filter"><label>☼ &nbsp; CLIMA</label><select id="weather"></select></div>
+      <div class="filter"><label>▢ &nbsp; EVENTO</label><select id="event"></select></div>
+    </div>
+    <div class="generator-controls">
+      <div class="source-selector">
+        <label>¿DE DÓNDE QUIERES QUE SE GENERE?</label>
+        <div class="source-options">
+          <button type="button" class="source-option active" data-source="recommendations" onclick="setSource('recommendations')">
+            <span>♧</span><strong>RECOMENDACIONES</strong><small>Prendas del catálogo MOODÉ</small>
+          </button>
+          <button type="button" class="source-option" data-source="closet" onclick="setSource('closet')">
+            <span>♧</span><strong>TU CLOSET</strong><small>Solo tus prendas</small>
+          </button>
+          <button type="button" class="source-option" data-source="mix" onclick="setSource('mix')">
+            <span>✧</span><strong>MIX</strong><small>Catálogo + tu closet</small>
+          </button>
+        </div>
+      </div>
+      <button class="main-generate" onclick="generateFromHome()">✧ &nbsp; GENERAR OUTFIT</button>
+    </div>
+  </div>
+
+  <div class="section-grid">
+    <article class="card recs">
+      <div class="card-head">
+        <h3>RECOMENDACIONES</h3>
+        <p>Prendas seleccionadas por MOODÉ según tu mood,<br>clima y evento. Explora el catálogo y encuentra tu look ideal.</p>
+        <button class="outline-btn" onclick="showView('recommendations')">VER CATÁLOGO COMPLETO &nbsp; →</button>
+      </div>
+      <div class="products" id="homeRecommendations"></div>
+    </article>
+
+    <article class="card closet">
+      <div class="card-head">
+        <h3>♧ &nbsp; TU CLOSET</h3>
+        <p>Agrega tus prendas y crea looks con lo que ya tienes.<br>Puedes subir fotos o elegir desde tu galería.</p>
+      </div>
+      <label class="upload-zone">
+        <input id="photoInput" type="file" accept="image/*" onchange="handleUpload(event)">
+        <span style="font-size:25px">▣</span><span>Subir foto de prenda<br><small style="color:#8ea6b2">o arrastra la imagen aquí</small></span>
+      </label>
+      <button class="add-manual" onclick="openModal()">＋ &nbsp; Añadir manualmente</button>
+      <div class="tabs"><button class="active">Todas</button><button>Tops</button><button>Bottoms</button><button>Outerwear</button><button>Zapatos</button><button>Accesorios</button></div>
+      <div class="closet-grid" id="homeCloset"></div>
+      <div style="padding:0 17px 15px"><button class="outline-btn" onclick="showView('closet')">VER TODO TU CLOSET &nbsp; →</button></div>
+    </article>
+
+    <article class="card mix">
+      <div class="card-head">
+        <h3>✧ &nbsp; MIX</h3>
+        <p>Combinamos lo mejor de RECOMENDACIONES<br>y TU CLOSET para crear looks únicos y a tu medida.</p>
+      </div>
+      <div class="mix-content">
+        <div class="mix-equation">
+          <div class="mix-box"><div class="mix-badge rec">♧</div><strong>RECOMENDACIONES</strong><small>Miles de opciones<br>de tendencia</small></div>
+          <div class="mix-symbol">+</div>
+          <div class="mix-box"><div class="mix-badge cl">♧</div><strong>TU CLOSET</strong><small>Tus prendas<br>favoritas</small></div>
+        </div>
+        <div class="equals">=</div>
+        <h4 class="unique-title">✦ Looks únicos ✦</h4>
+        <div class="unique-grid">
+          <div class="unique-look"><div class="fake-item.top"></div><div class="fake-item.jeans"></div><div class="fake-item.shoes"></div></div>
+          <div class="unique-look"><div class="fake-item.blazer"></div><div class="fake-item.jeans"></div><div class="fake-item.bag"></div></div>
+          <div class="unique-look"><div class="fake-item.blazer" style="background:#7b0010"></div><div class="fake-item.bag"></div></div>
+        </div>
+        <button class="generate" onclick="generateOutfit('mix')">GENERAR CON MIX &nbsp; →</button>
+      </div>
+    </article>
+  </div>
+
+  <div id="result" class="result-panel"></div>
+  <div class="footer">MOODÉ &nbsp; — &nbsp; <span>Your Style, Your Mood</span></div>
+</section>
+
+<section id="recommendations" class="view">
+  <h2 class="page-title">RECOMENDACIONES</h2>
+  <p class="page-sub">Un catálogo amplio de prendas para construir tu outfit según tus elecciones.</p>
+  <div class="tabs" id="recTabs"></div>
+  <div class="catalog" id="catalog"></div>
+</section>
+
+<section id="closet" class="view">
+  <h2 class="page-title">TU CLOSET</h2>
+  <p class="page-sub">Sube fotos de tus prendas o agrégalas manualmente. Se guardan en este navegador.</p>
+  <label class="upload-zone" style="margin:0 0 14px;min-height:120px">
+    <input id="photoInput2" type="file" accept="image/*" onchange="handleUpload(event)">
+    <span style="font-size:32px">▣</span><span>Subir una prenda a TU CLOSET<br><small style="color:#8ea6b2">JPG, PNG, WEBP</small></span>
+  </label>
+  <button class="generate" style="max-width:260px" onclick="openModal()">＋ AÑADIR MANUALMENTE</button>
+  <div class="catalog" id="fullCloset" style="margin-top:18px"></div>
+</section>
+
+<section id="mix" class="view">
+  <h2 class="page-title">MIX</h2>
+  <p class="page-sub">Combina las recomendaciones de MOODÉ con las prendas que ya tienes.</p>
+  <div class="card" style="padding:20px;max-width:900px">
+    <div class="mix-equation">
+      <div class="mix-box"><div class="mix-badge rec">♧</div><strong>RECOMENDACIONES</strong><small>Prendas del catálogo</small></div>
+      <div class="mix-symbol">+</div>
+      <div class="mix-box"><div class="mix-badge cl">♧</div><strong>TU CLOSET</strong><small id="mixCount">0 prendas guardadas</small></div>
+    </div>
+    <div class="filters" style="margin-top:18px">
+      <div class="filter"><label>♡ MOOD</label><select id="mixMood"></select></div>
+      <div class="filter"><label>☼ CLIMA</label><select id="mixWeather"></select></div>
+      <div class="filter"><label>▢ EVENTO</label><select id="mixEvent"></select></div>
+    </div>
+    <button class="generate" onclick="generateOutfit('mix')">✧ GENERAR LOOK CON MIX</button>
+  </div>
+  <div id="mixResult" class="result-panel"></div>
+</section>
+
+<section id="saved" class="view">
+  <h2 class="page-title">GUARDADOS</h2>
+  <p class="page-sub">Tus outfits favoritos aparecerán aquí.</p>
+  <div class="catalog" id="savedGrid"></div>
+</section>
+</main>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h3>Añadir a TU CLOSET</h3>
+    <div class="form-row">
+      <div class="form-group"><label>NOMBRE</label><input id="itemName" placeholder="Ej. Jeans wide leg"></div>
+      <div class="form-group"><label>CATEGORÍA</label><select id="itemCategory"><option>Top</option><option>Bottom</option><option>Outerwear</option><option>Vestido</option><option>Zapatos</option><option>Accesorio</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>COLOR</label><input id="itemColor" placeholder="Ej. Azul denim"></div>
+      <div class="form-group"><label>TIPO</label><input id="itemType" placeholder="Ej. Wide leg"></div>
+    </div>
+    <div class="modal-actions"><button class="cancel" onclick="closeModal()">Cancelar</button><button class="save" onclick="saveManual()">Guardar prenda</button></div>
+  </div>
+</div>
+
+<script>
+const MOODS=[
+"Confident","Calm","Romantic","Elegant","Cute","Casual","Creative","Bold","Minimal",
+"Feminine","Edgy","Cozy","Fresh","Mysterious","Playful","Sophisticated","Relaxed",
+"Energetic","Vintage","Dreamy","Dark","Artistic","Preppy","Effortless","Chic","Serene"
+];
+const WEATHERS=[
+"Muy caliente","Caliente","Templado","Fresco","Frío","Muy frío","Soleado","Nublado",
+"Lluvioso","Ventoso","Húmedo","Clima cambiante","Calor + lluvia","Noche fresca"
+];
+const EVENTS=[
+"Día normal","Colegio","Universidad","Salir con amigos","Café","Cine","Centro comercial",
+"Cumpleaños","Fiesta","Cena","Restaurante","Reunión familiar","Paseo","Viaje","Aeropuerto",
+"Museo","Concierto","Festival","Evento creativo","Presentación","Entrevista","Ceremonia",
+"Graduación","Formal","Semiformal","Cita","Picnic","Día en la ciudad","Fin de semana",
+"Vacaciones","Evento al aire libre"
+];
+
+const catalog=[
+["Camiseta básica","Top","Blanco","top"],["Camiseta oversize","Top","Negro","top"],["Crop top","Top","Rojo","top"],
+["Top de punto","Top","Crema","top"],["Top de tirantes","Top","Azul","top"],["Body","Top","Borgoña","top"],
+["Blusa satinada","Top","Crema","top"],["Blusa romántica","Top","Marfil","top"],["Camisa blanca","Top","Blanco","top"],
+["Camisa oversize","Top","Azul claro","top"],["Camisa manga corta","Top","Celeste","top"],["Camisa manga larga","Top","Blanco","top"],
+["Polo","Top","Azul marino","top"],["Suéter fino","Top","Crema","top"],["Cardigan","Top","Rojo","top"],
+["Jeans wide leg","Bottom","Azul denim","jeans"],["Jeans rectos","Bottom","Azul medio","jeans"],["Mom jeans","Bottom","Azul claro","jeans"],
+["Jeans oscuros","Bottom","Azul oscuro","jeans"],["Pantalón cargo","Bottom","Verde oliva","pants"],["Pantalón sastre","Bottom","Negro","pants"],
+["Pantalón de vestir","Bottom","Borgoña","pants"],["Pantalón palazzo","Bottom","Crema","pants"],["Pantalón recto","Bottom","Azul marino","pants"],
+["Falda midi","Bottom","Borgoña","skirt"],["Falda plisada","Bottom","Crema","skirt"],["Falda denim","Bottom","Azul denim","skirt"],
+["Falda maxi","Bottom","Negro","skirt"],["Short denim","Bottom","Azul claro","short"],["Short sastre","Bottom","Crema","short"],
+["Vestido midi","Vestido","Negro","dress"],["Vestido maxi","Vestido","Borgoña","dress"],["Vestido floral","Vestido","Crema","dress"],
+["Vestido negro","Vestido","Negro","dress"],["Jumpsuit","Vestido","Azul marino","dress"],["Blazer negro","Outerwear","Negro","blazer"],
+["Blazer beige","Outerwear","Crema","blazer"],["Blazer oversize","Outerwear","Azul marino","blazer"],["Chaqueta denim","Outerwear","Azul denim","jacket"],
+["Chaqueta de cuero","Outerwear","Negro","jacket"],["Gabardina","Outerwear","Crema","coat"],["Trench","Outerwear","Azul marino","coat"],
+["Abrigo largo","Outerwear","Borgoña","coat"],["Chaleco","Outerwear","Azul","vest"],["Sneakers blancos","Zapatos","Blanco","shoes"],
+["Sneakers retro","Zapatos","Crema","shoes"],["Loafers","Zapatos","Negro","loafers"],["Bailarinas","Zapatos","Borgoña","flats"],
+["Mary Janes","Zapatos","Negro","flats"],["Botines","Zapatos","Negro","boots"],["Botas altas","Zapatos","Negro","boots"],
+["Sandalias","Zapatos","Crema","sandals"],["Mocasines","Zapatos","Borgoña","loafers"],["Tacón bajo","Zapatos","Negro","heels"],
+["Bolso negro","Accesorio","Negro","bag"],["Mini bag","Accesorio","Borgoña","bag"],["Bolso baguette","Accesorio","Crema","bag"],
+["Tote bag","Accesorio","Azul marino","bag"],["Crossbody","Accesorio","Negro","bag"],["Cinturón negro","Accesorio","Negro","belt"],
+["Cinturón marrón","Accesorio","Marrón","belt"],["Collar dorado","Accesorio","Dorado","jewelry"],["Aretes dorados","Accesorio","Dorado","jewelry"],
+["Aretes plateados","Accesorio","Plateado","jewelry"],["Pañuelo","Accesorio","Borgoña","scarf"],["Gorra","Accesorio","Azul marino","cap"]
+];
+
+let closet=JSON.parse(localStorage.getItem("moode_closet")||"[]");
+let saved=JSON.parse(localStorage.getItem("moode_saved")||"[]");
+let activeRecCat="Todas";
+let lastKey="";
+
+function fillSelect(id,items){
+  const el=document.getElementById(id); if(!el)return;
+  el.innerHTML=items.map((x,i)=>`<option value="${x}" ${i===0?"selected":""}>${x}</option>`).join("");
+}
+["mood","mixMood"].forEach(id=>fillSelect(id,MOODS));
+["weather","mixWeather"].forEach(id=>fillSelect(id,WEATHERS));
+["event","mixEvent"].forEach(id=>fillSelect(id,EVENTS));
+
+function itemImage(type){
+  const map={jeans:"jeans",top:"top",blazer:"blazer",shoes:"shoes",bag:"bag"};
+  return `<div class="product-img"><div class="fake-item ${map[type]||"top"}"></div></div>`;
+}
+function productCard(item,source="rec"){
+  const [name,cat,color,type]=item;
+  return `<div class="product">${itemImage(type)}<div class="product-info"><b>${name}</b><span>${cat} · ${color}</span>${source==="closet"?'<span class="source closet">TU CLOSET</span>':'<span class="source rec">RECOMENDACIÓN</span>'}</div><button class="heart" onclick="saveItem('${name.replace(/'/g,"\\'")}')">♡</button></div>`;
+}
+function closetItemCard(x){
+  return `<div class="product">
+    <div class="product-img">${x.image?`<img src="${x.image}" alt="">`:`<div class="fake-item ${guessType(x.name)}"></div>`}</div>
+    <div class="product-info"><b>${x.name}</b><span>${x.category} · ${x.color||"Sin color"}</span></div>
+    <button class="heart" onclick="deleteCloset(${x.id})">×</button>
+  </div>`;
+}
+function guessType(name){
+  const n=name.toLowerCase();
+  if(n.includes("jean")||n.includes("pantalón")||n.includes("pantalon")||n.includes("falda")||n.includes("short"))return "jeans";
+  if(n.includes("blazer")||n.includes("chaqueta")||n.includes("abrigo")||n.includes("trench"))return "blazer";
+  if(n.includes("zapato")||n.includes("sneaker")||n.includes("loafer")||n.includes("bota")||n.includes("bailarina"))return "shoes";
+  if(n.includes("bolso")||n.includes("bag"))return "bag";
+  return "top";
+}
+function renderHome(){
+  document.getElementById("homeRecommendations").innerHTML=catalog.slice(0,9).map(x=>productCard(x)).join("");
+  const h=document.getElementById("homeCloset");
+  h.innerHTML=closet.length?closet.slice(-8).reverse().map(closetItemCard).join(""):`<div class="empty" style="grid-column:1/-1">Aún no tienes prendas. Sube tu primera foto.</div>`;
+  document.getElementById("mixCount").textContent=`${closet.length} ${closet.length===1?"prenda":"prendas"} guardadas`;
+}
+function renderCatalog(){
+  const cats=["Todas","Top","Bottom","Vestido","Outerwear","Zapatos","Accesorio"];
+  document.getElementById("recTabs").innerHTML=cats.map(c=>`<button class="${c===activeRecCat?"active":""}" onclick="setRecCat('${c}')">${c}</button>`).join("");
+  const arr=activeRecCat==="Todas"?catalog:catalog.filter(x=>x[1]===activeRecCat);
+  document.getElementById("catalog").innerHTML=arr.map(x=>productCard(x)).join("");
+}
+function renderCloset(){
+  document.getElementById("fullCloset").innerHTML=closet.length?closet.slice().reverse().map(closetItemCard).join(""):`<div class="empty" style="grid-column:1/-1">Tu closet está vacío. Sube una foto de una prenda como tus jeans wide leg.</div>`;
+}
+function renderSaved(){
+  const grid=document.getElementById("savedGrid");
+  if(!saved.length){
+    grid.innerHTML=`<div class="empty" style="grid-column:1/-1">Todavía no has guardado looks.</div>`;
+    return;
+  }
+  grid.innerHTML=saved.map(x=>{
+    if(x.items){
+      return `<div class="product" style="grid-column:span 2">
+        <div class="product-info" style="padding:15px">
+          <b style="font:500 25px Cormorant Garamond,serif">${x.mood||"Look MOODÉ"}</b>
+          <span>${x.weather||""} · ${x.event||""}</span>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:10px">
+            ${x.items.map(i=>`<span class="source ${closet.some(c=>c.name===i[0])?"closet":"rec"}">${i[0]}</span>`).join("")}
+          </div>
+        </div>
+      </div>`;
+    }
+    return productCard(x);
+  }).join("");
+}
+function setRecCat(c){activeRecCat=c;renderCatalog()}
+function showView(id){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===id));
+  if(id==="recommendations")renderCatalog();
+  if(id==="closet")renderCloset();
+  if(id==="saved")renderSaved();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
+
+function openModal(){document.getElementById("modal").classList.add("open")}
+function closeModal(){document.getElementById("modal").classList.remove("open")}
+function saveManual(){
+  const name=document.getElementById("itemName").value.trim()||"Prenda nueva";
+  const category=document.getElementById("itemCategory").value;
+  const color=document.getElementById("itemColor").value.trim()||"Sin color";
+  const type=document.getElementById("itemType").value.trim();
+  closet.push({id:Date.now(),name,category,color,type,image:null});
+  persist();closeModal();
+  ["itemName","itemColor","itemType"].forEach(id=>document.getElementById(id).value="");
+}
+function handleUpload(e){
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const name=prompt("¿Cómo quieres llamar a esta prenda?","Jeans wide leg")||"Prenda de mi closet";
+    const category=prompt("Categoría: Top, Bottom, Outerwear, Vestido, Zapatos o Accesorio","Bottom")||"Bottom";
+    closet.push({id:Date.now(),name,category,color:"",type:guessType(name),image:reader.result});
+    persist();
+    e.target.value="";
+  };
+  reader.readAsDataURL(file);
+}
+function deleteCloset(id){
+  if(confirm("¿Eliminar esta prenda de TU CLOSET?")){
+    closet=closet.filter(x=>x.id!==id);persist();
+  }
+}
+function persist(){
+  localStorage.setItem("moode_closet",JSON.stringify(closet));
+  localStorage.setItem("moode_saved",JSON.stringify(saved));
+  renderHome();renderCloset();renderSaved();
+}
+function saveItem(name){
+  const item=catalog.find(x=>x[0]===name);
+  if(item&&!saved.some(x=>x[0]===name)){saved.push(item);persist();alert("Prenda guardada en GUARDADOS.");}
+}
+
+function scoreItem(item,mood,weather,event){
+  let score=Math.random()*12;
+  const n=item[0].toLowerCase(), cat=item[1], color=item[2];
+  if(["Romantic","Feminine","Dreamy","Cute"].includes(mood)&&["Borgoña","Crema","Marfil","Rojo"].includes(color))score+=8;
+  if(["Elegant","Sophisticated","Chic","Confident"].includes(mood)&&["Blazer","Vestido","Bottom"].includes(cat))score+=5;
+  if(["Casual","Relaxed","Effortless","Fresh"].includes(mood)&&["Top","Bottom","Zapatos"].includes(cat))score+=5;
+  if(["Edgy","Bold","Dark","Mysterious"].includes(mood)&&["Negro","Borgoña","Azul oscuro"].includes(color))score+=8;
+  if(["Vintage","Preppy","Artistic"].includes(mood)&&["Falda","Polo","Cardigan","Blazer"].some(w=>n.includes(w.toLowerCase())))score+=6;
+  if(["Muy caliente","Caliente","Soleado"].includes(weather)){
+    if(["Short","Sandalias","Top","Crop","Camisa manga corta"].some(w=>n.includes(w.toLowerCase())))score+=8;
+    if(["Abrigo","Gabardina","Trench","Botas altas"].some(w=>n.includes(w.toLowerCase())))score-=12;
+  }
+  if(["Frío","Muy frío","Fresco","Noche fresca"].includes(weather)){
+    if(["Suéter","Cardigan","Blazer","Abrigo","Gabardina","Trench","Botas"].some(w=>n.includes(w.toLowerCase())))score+=8;
+    if(["Crop top","Short","Sandalias"].some(w=>n.includes(w.toLowerCase())))score-=7;
+  }
+  if(["Lluvioso","Calor + lluvia"].includes(weather)&&["Abrigo largo","Gabardina","Trench","Botines"].some(w=>n.includes(w)))score+=8;
+  if(["Formal","Ceremonia","Graduación","Entrevista"].includes(event)&&["Blazer","Vestido","Pantalón sastre","Pantalón de vestir","Tacón bajo","Loafers","Mocasines"].some(w=>n.includes(w.toLowerCase())))score+=10;
+  if(["Colegio","Universidad","Día normal","Centro comercial"].includes(event)&&["Jeans","Sneakers","Cardigan","Camiseta","Camisa"].some(w=>n.includes(w)))score+=5;
+  if(["Fiesta","Concierto","Festival"].includes(event)&&["Vestido","Blazer","Crop","Top","Botines","Bailarinas"].some(w=>n.includes(w.toLowerCase())))score+=7;
+  return score;
+}
+function choose(arr,count,used=[]){
+  const available=arr.filter(x=>!used.includes(x[0]));
+  return available.slice(0,count);
+}
+let selectedSource="recommendations";
+let lastGeneratedData=null;
+
+function setSource(source){
+  selectedSource=source;
+  document.querySelectorAll(".source-option").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.source===source);
+  });
+}
+
+function generateFromHome(){
+  if(selectedSource==="closet" && !closet.length){
+    alert("Tu closet está vacío. Añade primero una prenda para poder generar desde TU CLOSET.");
+    showView("closet");
+    return;
+  }
+  generateOutfit(selectedSource);
+}
+
+function makeOutfit(mode){
+  const mood=document.getElementById("mood").value;
+  const weather=document.getElementById("weather").value;
+  const event=document.getElementById("event").value;
+  const rec=catalog.map(x=>({x,score:scoreItem(x,mood,weather,event)})).sort((a,b)=>b.score-a.score).map(o=>o.x);
+  const cl=closet.map(x=>({
+    raw:x,
+    item:[x.name,x.category,x.color||"Sin color",x.type||guessType(x.name)],
+    score:scoreItem([x.name,x.category,x.color||"",x.type||guessType(x.name)],mood,weather,event)
+  })).sort((a,b)=>b.score-a.score);
+  let poolRec=rec, poolCl=cl.map(o=>o.item);
+  const top=mode==="closet"&&poolCl.length?poolCl.filter(x=>x[1]==="Top"):poolRec.filter(x=>x[1]==="Top");
+  const bottom=mode==="closet"&&poolCl.length?poolCl.filter(x=>x[1]==="Bottom"):poolRec.filter(x=>["Bottom"].includes(x[1]));
+  const outer=mode==="closet"&&poolCl.length?poolCl.filter(x=>x[1]==="Outerwear"):poolRec.filter(x=>x[1]==="Outerwear");
+  const shoes=mode==="closet"&&poolCl.length?poolCl.filter(x=>x[1]==="Zapatos"):poolRec.filter(x=>x[1]==="Zapatos");
+  const acc=mode==="closet"&&poolCl.length?poolCl.filter(x=>x[1]==="Accesorio"):poolRec.filter(x=>x[1]==="Accesorio");
+  let result=[];
+  const dress=(mode==="closet"&&poolCl.length?poolCl:poolRec).filter(x=>x[1]==="Vestido");
+  const useDress=Math.random()<.28&&dress.length;
+  if(useDress){
+    result=[dress[Math.floor(Math.random()*Math.min(4,dress.length))]];
+    if(shoes.length)result.push(shoes[Math.floor(Math.random()*Math.min(4,shoes.length))]);
+    if(outer.length&&["Frío","Muy frío","Fresco","Noche fresca"].includes(weather))result.push(outer[Math.floor(Math.random()*Math.min(4,outer.length))]);
+  }else{
+    if(top.length)result.push(top[Math.floor(Math.random()*Math.min(6,top.length))]);
+    if(bottom.length)result.push(bottom[Math.floor(Math.random()*Math.min(6,bottom.length))]);
+    if(outer.length&&(["Frío","Muy frío","Fresco","Lluvioso","Noche fresca"].includes(weather)||Math.random()>.52))result.push(outer[Math.floor(Math.random()*Math.min(6,outer.length))]);
+    if(shoes.length)result.push(shoes[Math.floor(Math.random()*Math.min(6,shoes.length))]);
+  }
+  if(acc.length)result.push(acc[Math.floor(Math.random()*Math.min(8,acc.length))]);
+  if(mode==="mix"&&closet.length){
+    const c=poolCl[Math.floor(Math.random()*poolCl.length)];
+    if(c)result[0]=c;
+  }
+  return {result,mood,weather,event,mode};
+}
+function generateOutfit(mode="mix"){
+  if(mode==="closet"&&!closet.length){
+    alert("Tu closet está vacío. Primero añade al menos una prenda.");
+    showView("closet");return;
+  }
+  let data,tries=0,key;
+  do{
+    data=makeOutfit(mode);
+    key=data.result.map(x=>x[0]).join("|");tries++;
+  }while(key===lastKey&&tries<8);
+  lastKey=key;
+  lastGeneratedData=data;
+  renderResult(data,mode==="mix"?"mixResult":"result");
+  if(mode==="mix")document.getElementById("mixResult").scrollIntoView({behavior:"smooth",block:"start"});
+  else document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function saveCurrentLook(){
+  if(!lastGeneratedData) return;
+  const look={
+    id:Date.now(),
+    title:lastGeneratedData.mood,
+    mood:lastGeneratedData.mood,
+    weather:lastGeneratedData.weather,
+    event:lastGeneratedData.event,
+    mode:lastGeneratedData.mode,
+    items:lastGeneratedData.result
+  };
+  const exists=saved.some(x=>JSON.stringify(x.items||[])===JSON.stringify(look.items));
+  if(!exists){
+    saved.push(look);
+    localStorage.setItem("moode_saved",JSON.stringify(saved));
+    alert("Look guardado en GUARDADOS.");
+  }else{
+    alert("Este look ya está guardado.");
+  }
+}
+
+function renderResult(data,target){
+  const el=document.getElementById(target);
+  const titleMap={
+    Confident:"Confident City","Calm":"Soft & Calm","Romantic":"Romantic Mood","Elegant":"Effortless Elegance",
+    Cute:"Sweet Day","Casual":"Everyday Cool","Creative":"Creative Energy","Bold":"Bold Statement",
+    Minimal:"Clean & Minimal","Feminine":"Feminine Mood","Edgy":"Modern Edge","Cozy":"Cozy Layers",
+    Fresh:"Fresh Day","Mysterious":"Midnight Mood","Playful":"Playful City","Sophisticated":"Sophisticated Day",
+    Relaxed:"Relaxed & Chic","Energetic":"Energetic Day","Vintage":"Vintage Touch","Dreamy":"Dreamy Look",
+    Dark:"Dark Mood","Artistic":"Artistic City","Preppy":"Preppy Notes","Effortless":"Effortless Look",
+    Chic:"Chic City","Serene":"Serene Day"
+  };
+  el.innerHTML=`<h3 class="result-title">${titleMap[data.mood]||"Tu outfit MOODÉ"}</h3>
+  <div class="result-meta">${data.mood} · ${data.weather} · ${data.event}</div>
+  <div class="result-items">${data.result.map(x=>{
+    const fromCloset=closet.some(c=>c.name===x[0]);
+    return `<div class="result-item">${itemImage(x[3])}<div class="product-info"><b>${x[0]}</b><span>${x[1]} · ${x[2]}</span><span class="source ${fromCloset?"closet":"rec"}">${fromCloset?"TU CLOSET":"RECOMENDACIÓN"}</span></div></div>`;
+  }).join("")}</div>
+  <div class="reason">“MOODÉ eligió estas piezas para acompañar tu ${data.mood.toLowerCase()} mood, el clima ${data.weather.toLowerCase()} y tu evento: ${data.event.toLowerCase()}.”</div>
+  <div class="remake-row">
+    <button class="remake-btn" onclick="generateOutfit('${data.mode}')">↻ &nbsp; REMAKE</button>
+    <button class="save-look-btn" onclick="saveCurrentLook()">♡ &nbsp; GUARDAR LOOK</button>
+  </div>`;
+  el.classList.add("show");
+}
+renderHome();renderCatalog();renderCloset();renderSaved();
+</script>
+</body>
+</html>
